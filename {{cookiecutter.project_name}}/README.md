@@ -1,42 +1,70 @@
 # {{cookiecutter.project_name}}
 
-[![Release](https://img.shields.io/github/v/release/{{cookiecutter.author_github_handle}}/{{cookiecutter.project_name}})](https://img.shields.io/github/v/release/{{cookiecutter.author_github_handle}}/{{cookiecutter.project_name}})
-[![Build status](https://img.shields.io/github/actions/workflow/status/{{cookiecutter.author_github_handle}}/{{cookiecutter.project_name}}/main.yml?branch=main)](https://github.com/{{cookiecutter.author_github_handle}}/{{cookiecutter.project_name}}/actions/workflows/main.yml?query=branch%3Amain)
-[![codecov](https://codecov.io/gh/{{cookiecutter.author_github_handle}}/{{cookiecutter.project_name}}/branch/main/graph/badge.svg)](https://codecov.io/gh/{{cookiecutter.author_github_handle}}/{{cookiecutter.project_name}})
-[![Commit activity](https://img.shields.io/github/commit-activity/m/{{cookiecutter.author_github_handle}}/{{cookiecutter.project_name}})](https://img.shields.io/github/commit-activity/m/{{cookiecutter.author_github_handle}}/{{cookiecutter.project_name}})
-[![License](https://img.shields.io/github/license/{{cookiecutter.author_github_handle}}/{{cookiecutter.project_name}})](https://img.shields.io/github/license/{{cookiecutter.author_github_handle}}/{{cookiecutter.project_name}})
-
 {{cookiecutter.project_description}}
 
-- **Github repository**: <https://github.com/{{cookiecutter.author_github_handle}}/{{cookiecutter.project_name}}/>
-- **Documentation** <https://{{cookiecutter.author_github_handle}}.github.io/{{cookiecutter.project_name}}/>
+## 1. Getting Started
 
-## Getting started with your project
+1. Clone the repository to your desired directory:
 
-First, create a repository on GitHub with the same name as this project, and then run the following commands:
+    ```bash
+    cd <directory_in_which_repo_should_be_created>
+    git clone https://github.com/{{cookiecutter.author_github_handle}}/{{cookiecutter.project_name}}.git
+    cd {{cookiecutter.project_name}}
+    ```
 
-```bash
-git init -b main
-git add .
-git commit -m "init commit"
-git remote add origin git@github.com:{{cookiecutter.author_github_handle}}/{{cookiecutter.project_name}}.git
-git push -u origin main
-```
+2. Activate your Python environment (Python {{cookiecutter.target_python_version}} version is recommended).
 
-Finally, install the environment and the pre-commit hooks with
+3. Install Poetry for dependency management:
 
-```bash
-make install
-```
+    ```bash
+    python -m pip install --upgrade pip
+    pip install poetry=={{cookiecutter.poetry_version}}
+    ```
 
-You are now ready to start development on your project!
-The CI/CD pipeline will be triggered when you open a pull request, merge to main, or when you create a new release.
+4. Install the project dependencies and set up pre-commit hooks:
 
-To finalize the set-up for publishing to PyPi or Artifactory, see [here](https://fpgmaas.github.io/cookiecutter-poetry/features/publishing/#set-up-for-pypi).
-For activating the automatic documentation with MkDocs, see [here](https://fpgmaas.github.io/cookiecutter-poetry/features/mkdocs/#enabling-the-documentation-on-github).
-To enable the code coverage reports, see [here](https://fpgmaas.github.io/cookiecutter-poetry/features/codecov/).
+    ```bash
+    make install
+    ```
+
+Now, you are prepared to embark on the development of new features for the project.
+
+
+
+## 2. Contributiong
+
+1. **Branch Creation:**
+    Start by creating a new branch from the `/main` branch using the following format:
+    ```
+    git checkout -b feature/DP-{{JiraTaskID}}-{{JiraTaskName}}
+    ```
+    Proceed with the implementation of the new feature within this branch.
+
+2. **Run Pre-commit Hooks:**
+    Ensure adherence to coding best practices by running pre-commit hooks, which utilize `black` as a code formatter and `ruff` as a linter.
+    To evaluate the code quality before committing your changes, execute the following command to trigger pre-commit hooks and perform static code analysis using `mypy`:
+
+    ```bash
+    make check
+    ```
+
+3. **Run Unit Tests:**
+    Validate that your changes have not adversely affected existing code by running unit tests with `pytest`:
+
+    ```bash
+    make test
+    ```
+
+    Alternatively, execute a comprehensive test matrix with different Python versions using `tox`:
+
+    ```bash
+    tox
+    ```
+
+Once these steps are completed successfully, proceed to commit and push your changes. The CI/CD pipeline will automatically trigger upon the creation of a pull request, merging to the main branch, or the creation of a new release.
+
 
 
 ---
-
-Repository initiated with [fpgmaas/cookiecutter-poetry](https://github.com/fpgmaas/cookiecutter-poetry).
+### Credits
+Repository initiated with [ga-data-strategy-analytics/cookiecutter-python-template](https://github.com/ga-data-strategy-analytics/cookiecutter-python-template).

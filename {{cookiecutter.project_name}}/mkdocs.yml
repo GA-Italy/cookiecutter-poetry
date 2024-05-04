@@ -1,3 +1,4 @@
+# Ref: https://mkdocstrings.github.io/recipes/#automatic-code-reference-pages
 site_name: {{cookiecutter.project_name}}
 repo_url: https://github.com/{{cookiecutter.author_github_handle}}/{{cookiecutter.project_name}}
 site_url: https://{{cookiecutter.author_github_handle}}.github.io/{{cookiecutter.project_name}}
@@ -5,19 +6,24 @@ site_description: {{cookiecutter.project_description}}
 site_author: {{cookiecutter.author}}
 edit_uri: edit/main/docs/
 repo_name: {{cookiecutter.author_github_handle}}/{{cookiecutter.project_name}}
-copyright: Maintained by <a href="https://{{cookiecutter.author_github_handle}}.com">Florian</a>.
+copyright: Maintained by <a href="https://github.com/{{cookiecutter.author_github_handle}}">{{cookiecutter.author}}</a>.
+
 
 nav:
-  - Home: index.md
-  - Modules: modules.md
+- Home: index.md
+- Getting started: content/getting-started.md
+- Code Reference: reference/
+
 plugins:
   - search
-  - mkdocstrings:
-      handlers:
-        python:
-            setup_commands:
-                - import sys
-                - sys.path.append('../')
+  - gen-files:
+      scripts:
+      - scripts/gen_ref_pages.py
+  - literate-nav:
+      nav_file: SUMMARY.md
+  - section-index
+  - mkdocstrings
+
 theme:
   name: material
   feature:
@@ -25,15 +31,15 @@ theme:
   palette:
     - media: "(prefers-color-scheme: light)"
       scheme: default
-      primary: white
-      accent: deep orange
+      primary: blue grey
+      accent: teal
       toggle:
         icon: material/brightness-7
         name: Switch to dark mode
     - media: "(prefers-color-scheme: dark)"
       scheme: slate
-      primary: black
-      accent: deep orange
+      primary: blue grey
+      accent: teal
       toggle:
         icon: material/brightness-4
         name: Switch to light mode
@@ -44,11 +50,18 @@ extra:
   social:
     - icon: fontawesome/brands/github
       link: https://github.com/{{cookiecutter.author_github_handle}}/{{cookiecutter.project_name}}
-    - icon: fontawesome/brands/python
-      link: https://pypi.org/project/{{cookiecutter.project_name}}
+    - icon: fontawesome/brands/confluence
+      link: https://giorgioarmani.atlassian.net/wiki/spaces/DP/overview
 
 markdown_extensions:
   - toc:
       permalink: true
   - pymdownx.arithmatex:
       generic: true
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.superfences
