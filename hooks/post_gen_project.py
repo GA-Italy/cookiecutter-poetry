@@ -16,9 +16,6 @@ def remove_dir(filepath: str) -> None:
 if __name__ == "__main__":
     if "{{cookiecutter.include_github_actions}}" != "y":
         remove_dir(".github")
-    else:
-        if "{{cookiecutter.mkdocs}}" != "y" and "{{cookiecutter.publish_to}}" == "none":
-            remove_file(".github/workflows/on-release-main.yml")
 
     if "{{cookiecutter.mkdocs}}" != "y":
         remove_dir("docs")
@@ -34,3 +31,6 @@ if __name__ == "__main__":
 
     if "{{cookiecutter.devcontainer}}" != "y":
         remove_dir(".devcontainer")
+    
+    if "{{cookiecutter.tox}}" != "y":
+        remove_file("tox.ini")

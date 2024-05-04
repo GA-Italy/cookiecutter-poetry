@@ -1,86 +1,62 @@
-<p align="center">
-  <img width="600" src="https://raw.githubusercontent.com/fpgmaas/cookiecutter-poetry/main/docs/static/cookiecutter.svg">
-</p style = "margin-bottom: 2rem;">
+# Python template - Cookiecutter
 
----
-
-[![Release](https://img.shields.io/github/v/release/fpgmaas/cookiecutter-poetry)](https://pypi.org/project/cookiecutter-poetry/)
-[![Build status](https://img.shields.io/github/actions/workflow/status/fpgmaas/cookiecutter-poetry/main.yml?branch=main)](https://github.com/fpgmaas/cookiecutter-poetry/actions/workflows/main.yml?query=branch%3Amain)
-[![Supported Python versions](https://img.shields.io/pypi/pyversions/cookiecutter-poetry)](https://pypi.org/project/cookiecutter-poetry/)
-[![Docs](https://img.shields.io/badge/docs-gh--pages-blue)](https://fpgmaas.github.io/cookiecutter-poetry/)
-[![License](https://img.shields.io/github/license/fpgmaas/cookiecutter-poetry)](https://img.shields.io/github/license/fpgmaas/cookiecutter-poetry)
-
-This is a modern Cookiecutter template that can be used to initiate a Python project with all the necessary tools for development, testing, and deployment. It supports the following features:
+This is a Cookiecutter template that is used by the Giorgio Armani - Data Strategy and Analytics team to initiate a Python project with all the necessary tools for development, testing, and deployment. It supports the following features:
 
 - [Poetry](https://python-poetry.org/) for dependency management
 - CI/CD with [GitHub Actions](https://github.com/features/actions)
 - Pre-commit hooks with [pre-commit](https://pre-commit.com/)
-- Code quality with [ruff](https://github.com/charliermarsh/ruff), [mypy](https://mypy.readthedocs.io/en/stable/), [deptry](https://github.com/fpgmaas/deptry/) and [prettier](https://prettier.io/)
-- Publishing to [Pypi](https://pypi.org) or [Artifactory](https://jfrog.com/artifactory) by creating a new release on GitHub
+- Code quality with [ruff](https://github.com/charliermarsh/ruff), [mypy](https://mypy.readthedocs.io/en/stable/)
 - Testing and coverage with [pytest](https://docs.pytest.org/en/7.1.x/) and [codecov](https://about.codecov.io/)
 - Documentation with [MkDocs](https://www.mkdocs.org/)
 - Compatibility testing for multiple versions of Python with [Tox](https://tox.wiki/en/latest/)
 - Containerization with [Docker](https://www.docker.com/)
-- Development environment with [VSCode devcontainers](https://code.visualstudio.com/docs/devcontainers/containers)
 
----
 
-<p align="center">
-  <a href="https://fpgmaas.github.io/cookiecutter-poetry/">Documentation</a> - <a href="https://github.com/fpgmaas/cookiecutter-poetry-example">Example</a> -
-  <a href="https://pypi.org/project/cookiecutter-poetry/">PyPi</a>
-</p>
 
----
+## Getting Started
 
-## Quickstart
+1. Install cookiecutter:
+    `pip install cookiecutter`
 
-On your local machine, navigate to the directory in which you want to
-create a project directory, and run the following two commands:
+2. Create a repository from template: `cookiecutter https://github.com/ga-data-strategy-analytics/cookiecutter-python-template.git` and configure the project
 
-```bash
-pip install cookiecutter-poetry
-ccp
-```
+3. Configure git and create a branch to push on the related data collection repository:
+    ```bash
+    cd <PROJECT_NAME>
+    git init
+    git checkout -b <BRANCH_NAME>
+    git add .
+    git commit -m "Initial setup from template"
+    git remote add origin git@github.com:<GITHUB_AUTHOR_HANDLE>/<PROJECT_NAME>.git
+    git fetch
+    git branch --set-upstream-to=origin/<BRANCH_NAME> <BRANCH_NAME>
+    git merge origin/<BRANCH_NAME> --allow-unrelated-histories
+    git push -u origin <BRANCH_NAME>
+    ```
 
-Alternatively, install `cookiecutter` and directly pass the URL to this
-Github repository to the `cookiecutter` command:
+4. Finally, install the environment and the pre-commit hooks with
+    ```bash
+    make install
+    ```
 
-```bash
-pip install cookiecutter
-cookiecutter https://github.com/fpgmaas/cookiecutter-poetry.git
-```
-
-Create a repository on GitHub, and then run the following commands, replacing `<project-name>`, with the name that you gave the Github repository and
-`<github_author_handle>` with your Github username.
-
-```bash
-cd <project_name>
-git init -b main
-git add .
-git commit -m "Init commit"
-git remote add origin git@github.com:<github_author_handle>/<project_name>.git
-git push -u origin main
-```
-
-Finally, install the environment and the pre-commit hooks with
-
-```bash
-make install
-```
-
-You are now ready to start development on your project! The CI/CD
+5. You are now ready to start development on your project! The CI/CD
 pipeline will be triggered when you open a pull request, merge to main,
 or when you create a new release.
 
-To finalize the set-up for publishing to PyPi or Artifactory, see
-[here](https://fpgmaas.github.io/cookiecutter-poetry/features/publishing/#set-up-for-pypi).
-For activating the automatic documentation with MkDocs, see
-[here](https://fpgmaas.github.io/cookiecutter-poetry/features/mkdocs/#enabling-the-documentation-on-github).
-To enable the code coverage reports, see [here](https://fpgmaas.github.io/cookiecutter-poetry/features/codecov/).
+## Update repo from template
+
+If you want to update an already existing repo in a local folder, and reflect the latest updated made on the template, use the following commands (make sure you use the same configurations setted for the repo you are working on):
+```
+cookiecutter https://github.com/ga-data-strategy-analytics/cookiecutter-python-template.git -f
+cd <PROJECT_NAME>
+make poetry-lock
+make check
+git add .
+git commit -m "Refactor from template"
+git push
+```
 
 ## Acknowledgements
 
-This project is partially based on [Audrey
-Feldroy\'s](https://github.com/audreyfeldroy)\'s great
-[cookiecutter-pypackage](https://github.com/audreyfeldroy/cookiecutter-pypackage)
+This project is partially based on [fpgmaas/cookiecutter-poetry](https://github.com/fpgmaas/cookiecutter-poetry)
 repository.

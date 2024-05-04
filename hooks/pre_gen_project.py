@@ -20,3 +20,13 @@ if not re.match(PROJECT_SLUG_REGEX, project_slug):
     )
     # Exit to cancel project
     sys.exit(1)
+
+TARGET_PYTHON_VERSION_REGEX = r"^3\.(8|9|10|11)$"
+target_python_version = "{{cookiecutter.target_python_version}}"
+if not re.match(TARGET_PYTHON_VERSION_REGEX, target_python_version):
+    print(
+        "ERROR: The target python version (%s) is not a valid Python version."
+        % target_python_version
+    )
+    # Exit to cancel project
+    sys.exit(1)

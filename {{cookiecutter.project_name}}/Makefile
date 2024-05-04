@@ -1,31 +1,41 @@
 .PHONY: install
 install: ## Install the poetry environment and install the pre-commit hooks
-	@echo "🚀 Creating virtual environment using pyenv and poetry"
-	@poetry install
-	@ poetry run pre-commit install
+	@echo "🆕 Creating virtual environment using poetry"
+	@poetry install --no-interaction
+	@poetry run pre-commit install
 	@poetry shell
+
+.PHONY: install-only
+install-only: ## Only install the poetry environment
+	@echo "🆕 Creating virtual environment using poetry"
+	@poetry install --no-interaction
+
+.PHONY: update
+update: ## Resolve all dependencies of the project and write the exact versions into poetry.lock
+	@echo "🚀 Updating virtual environment and poetry.lock based on pyproject.toml"
+	@poetry update
+
+.PHONY: remove-env
+remove-env: ## Remove the virtual enviroment created using poetry
+	@echo "🗑️ Removing the virtual enviroment created using poetry"
+	@poetry env remove --all
 
 .PHONY: check
 check: ## Run code quality tools.
-	@echo "🚀 Checking Poetry lock file consistency with 'pyproject.toml': Running poetry lock --check"
-	@poetry lock --check
 	@echo "🚀 Linting code: Running pre-commit"
 	@poetry run pre-commit run -a
 	@echo "🚀 Static type checking: Running mypy"
-	@poetry run mypy
-{%- if cookiecutter.deptry == 'y' %}
-	@echo "🚀 Checking for obsolete dependencies: Running deptry"
-	@poetry run deptry .
-{%- endif %}
+	@poetry run mypy --install-types --non-interactive
+
+.PHONY: poetry-lock
+poetry-lock: ## Generate new poetry.lock file
+	@echo "🚀 Generating new Poetry lock file consistent with 'pyproject.toml'"
+	@poetry lock --no-update
 
 .PHONY: test
 test: ## Test the code with pytest
 	@echo "🚀 Testing code: Running pytest"
-{%- if cookiecutter.codecov == "y"%}
-	@poetry run pytest --cov --cov-config=pyproject.toml --cov-report=xml
-{%- else %}
-	@poetry run pytest --doctest-modules
-{%- endif%}
+	@poetry run pytest --doctest-modules tests --cov --cov-config=pyproject.toml --cov-report=xml -vv
 
 .PHONY: build
 build: clean-build ## Build wheel file using poetry
@@ -36,34 +46,7 @@ build: clean-build ## Build wheel file using poetry
 clean-build: ## clean build artifacts
 	@rm -rf dist
 
-{%- if cookiecutter.publish_to == "pypi"%}
-
-.PHONY: publish
-publish: ## publish a release to pypi.
-	@echo "🚀 Publishing: Dry run."
-	@poetry config pypi-token.pypi $(PYPI_TOKEN)
-	@poetry publish --dry-run
-	@echo "🚀 Publishing."
-	@poetry publish
-
-.PHONY: build-and-publish
-build-and-publish: build publish ## Build and publish.
-{%- elif cookiecutter.publish_to == "artifactory" %}
-
-.PHONY: publish
-publish: ## Publish to the Artifactory repository using poetry. Requires ARTIFACTORY_TOKEN to be set.
-	@echo "🚀 Publishing: Dry run."
-	@poetry config repositories.artifactory $(ARTIFACTORY_URL)
-	@poetry publish --repository artifactory --username $(ARTIFACTORY_USERNAME) --password $(ARTIFACTORY_PASSWORD) --dry-run
-	@echo "🚀 Publishing."
-	@poetry publish --repository artifactory --username $(ARTIFACTORY_USERNAME) --password $(ARTIFACTORY_PASSWORD)
-
-.PHONY: build-and-publish
-build-and-publish: build publish ## Build and publish.
-{%- endif%}
-
-{%- if cookiecutter.mkdocs == "y" %}
-
+{% if cookiecutter.mkdocs == 'y' -%}
 .PHONY: docs-test
 docs-test: ## Test if documentation can be built without warnings or errors
 	@poetry run mkdocs build -s
@@ -72,6 +55,9 @@ docs-test: ## Test if documentation can be built without warnings or errors
 docs: ## Build and serve the documentation
 	@poetry run mkdocs serve
 
+.PHONY: docs-deploy
+docs-deploy: ## Deploy the documentation on Github pages
+	@poetry run mkdocs gh-deploy --force
 {%- endif %}
 
 .PHONY: help

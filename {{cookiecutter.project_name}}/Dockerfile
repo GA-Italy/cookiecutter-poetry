@@ -1,21 +1,34 @@
-# syntax=docker/dockerfile:1
+########## BUILDER STAGE ##########
+FROM python:{{cookiecutter.target_python_version}}-alpine as builder
 
-FROM python:3.9-slim-buster
+USER root
 
-ENV POETRY_VERSION=1.4 \
-    POETRY_VIRTUALENVS_CREATE=false
+ENV PIP_DISABLE_PIP_VERSION_CHECK=1 \
+    PIP_NO_CACHE_DIR=1 \
+    POETRY_VERSION={{cookiecutter.poetry_version}}
 
-# Install poetry
-RUN pip install "poetry==$POETRY_VERSION"
+COPY pyproject.toml /home/app/pyproject.toml
+COPY poetry.lock /home/app/poetry.lock
+COPY {{cookiecutter.project_slug}} /home/app/{{cookiecutter.project_slug}}
 
-# Copy only requirements to cache them in docker layer
-WORKDIR /code
-COPY poetry.lock pyproject.toml /code/
+WORKDIR /home/app
 
-# Project initialization:
-RUN poetry install --no-interaction --no-ansi --no-root --no-dev
+RUN python3 -m venv venv && \
+    source venv/bin/activate  && \
+    pip install -U pip && \
+    pip install "poetry==$POETRY_VERSION" && \
+    poetry install --without dev
 
-# Copy Python code to the Docker image
-COPY {{cookiecutter.project_slug}} /code/{{cookiecutter.project_slug}}/
+########## FINAL STAGE ##########
+FROM python:{{cookiecutter.target_python_version}}-alpine
 
-CMD [ "python", "{{cookiecutter.project_slug}}/foo.py"]
+WORKDIR /home/app
+
+ENV PATH="/home/app/venv/bin:$PATH"
+
+COPY --from=builder /home/app/venv /home/app/venv
+COPY --from=builder /home/app/{{cookiecutter.project_slug}} /home/app/{{cookiecutter.project_slug}}
+
+RUN source /home/app/venv/bin/activate
+
+ENTRYPOINT ["/bin/sh", "-c"]
