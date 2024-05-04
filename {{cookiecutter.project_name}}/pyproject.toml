@@ -138,4 +138,3 @@ skip_empty = true
 branch = true
 source = ["{{cookiecutter.project_slug}}"]
 {% endif%}
-
