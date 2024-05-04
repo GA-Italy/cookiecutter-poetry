@@ -79,10 +79,10 @@ jobs:
         uses: docker/build-push-action@v5
         id: build
         env:
-          IMAGE_URI: {% raw %}${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY_NAME}}:${{ steps.evaluate-image-tag.outputs.image_tag }}{% raw %}
+          IMAGE_URI: {% raw %}${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY_NAME}}:${{ steps.evaluate-image-tag.outputs.image_tag }}{% endraw %}
         with:
-          platforms: {% raw %}${{ github.event.inputs.platform }}{% raw %}
-          tags: {% raw %}${{ env.IMAGE_URI }}{% raw %}
+          platforms: {% raw %}${{ github.event.inputs.platform }}{% endraw %}
+          tags: {% raw %}${{ env.IMAGE_URI }}{% endraw %}
           file: Dockerfile
           push: true
           provenance: false
