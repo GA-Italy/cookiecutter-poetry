@@ -1,0 +1,88 @@
+name: Deploy dev - Workflow
+on:
+  workflow_dispatch:
+    inputs:
+      image_tag:
+        required: false
+        description: Tag name for the docker image
+
+      platform:
+        type: choice
+        required: true
+        description: Build plaform
+        default: 'linux/amd64'
+        options:
+        - linux/amd64
+        - linux/arm64
+        {% raw %}${{ github.ref_name }} - ${{ github.event.head_commit.message }}{% endraw %}
+env:
+  AWS_REGION : {% raw %}${{ vars.AWS_REGION }}{% endraw %}
+  AWS_DEPLOY_ROLE_ARN_DEV : {% raw %}${{ vars.AWS_DEPLOY_ROLE_ARN_DEV }}{% endraw %}
+  ECR_REPOSITORY_NAME: {% raw %}${{ vars.ECR_REPOSITORY_NAME }}{% endraw %}
+  BRANCH: {% raw %}${{ github.ref }}{% endraw %}
+
+run-name: Deploy dev - docker image {% raw %}${{ vars.ECR_REPOSITORY_NAME }}:${{ github.event.inputs.image_tag }}{% endraw %}
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  deploy_docker_dev:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          ref: {% raw %}${{ env.BRANCH }}{% endraw %}
+
+      - name: Evaluate Image Tag
+        id: evaluate-image-tag
+        run: |
+          if [ -z "{% raw %}${{ github.event.inputs.image_tag }}{% endraw %}" ]; then
+            git fetch --tags --force
+            image_tag=$(bash scripts/versioning_script.sh)
+            echo "Using script to compute image_tag: '$image_tag'"
+            echo "image_tag=$image_tag" >> "$GITHUB_OUTPUT"
+          else
+            echo "Using the provided image_tag from the input: '{% raw %}${{ github.event.inputs.image_tag }}{% endraw %}'"
+            echo "image_tag={% raw %}${{ github.event.inputs.image_tag }}{% endraw %}" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-region: {% raw %}${{ env.AWS_REGION }}{% endraw %}
+          role-to-assume: {% raw %}${{ env.AWS_DEPLOY_ROLE_ARN_DEV }}{% endraw %}
+          role-session-name: ECRDeploySession
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+        with:
+          mask-password: 'true'
+
+      - name: Get image name
+        id: get-image-name
+        env:
+          IMAGE: {% raw %}${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY_NAME}}{% endraw %}
+        run: echo "image_name=$IMAGE" >> "$GITHUB_OUTPUT"
+
+      - name: Build and push
+        uses: docker/build-push-action@v5
+        id: build
+        env:
+          IMAGE_URI: {% raw %}${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY_NAME}}:${{ steps.evaluate-image-tag.outputs.image_tag }}{% raw %}
+        with:
+          platforms: {% raw %}${{ github.event.inputs.platform }}{% raw %}
+          tags: {% raw %}${{ env.IMAGE_URI }}{% raw %}
+          file: Dockerfile
+          push: true
+          provenance: false
