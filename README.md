@@ -15,10 +15,12 @@ This is a Cookiecutter template that is used by the Giorgio Armani - Data Strate
 
 ## Getting Started
 
-1. Install cookiecutter:
-    `pip install cookiecutter`
+In order to keep the project aligned with possible updates on the template, it is adviced to use [cruft](https://github.com/cruft/cruft) instead of cookiecutter to create an instance of the template.
 
-2. Create a repository from template: `cookiecutter https://github.com/ga-data-strategy-analytics/cookiecutter-python-template.git` and configure the project
+1. Install cruft:
+    `pip install cruft`
+
+2. Create a repository from template: `cuft create https://github.com/ga-data-strategy-analytics/cookiecutter-python-template.git` and configure the project
 
 3. Configure git and create a branch to push on the related data collection repository:
     ```bash
@@ -47,8 +49,8 @@ or when you create a new release.
 
 If you want to update an already existing repo in a local folder, and reflect the latest updated made on the template, use the following commands (make sure you use the same configurations setted for the repo you are working on):
 ```
-cookiecutter https://github.com/ga-data-strategy-analytics/cookiecutter-python-template.git -f
 cd <PROJECT_NAME>
+cruft update
 make poetry-lock
 make check
 git add .
