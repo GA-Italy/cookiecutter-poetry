@@ -85,7 +85,7 @@ jobs:
           CODECOV_TOKEN: {% raw %}${{ secrets.CODECOV_TOKEN }}{% endraw %}
           verbose: true # optional (default = false)
         if: {% raw %}${{ matrix.python-version == {% endraw %}'{{cookiecutter.target_python_version}}' {% raw %}}}{% endraw %}
-{% else %}
+{%- endif %}
 {% else %}
 tests:
   runs-on: ubuntu-latest
