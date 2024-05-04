@@ -36,7 +36,7 @@ Now, you are prepared to embark on the development of new features for the proje
 1. **Branch Creation:**
     Start by creating a new branch from the `/main` branch using the following format:
     ```
-    git checkout -b feature/DP-{{JiraTaskID}}-{{JiraTaskName}}
+    {% raw %}git checkout -b feature/DP-{{JiraTaskID}}-{{JiraTaskName}}{% endraw %}
     ```
     Proceed with the implementation of the new feature within this branch.
 
