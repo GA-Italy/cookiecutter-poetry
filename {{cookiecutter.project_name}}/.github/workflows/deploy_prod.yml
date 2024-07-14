@@ -1,5 +1,5 @@
 name: Deploy prod - Workflow
-run-name: Deploy prod - docker image ${{ vars.ECR_REPOSITORY_NAME }}
+run-name: Deploy prod - docker image {% raw %}${{ vars.ECR_REPOSITORY_NAME }}{% endraw %}
 
 on:
   workflow_dispatch:
