@@ -1,4 +1,6 @@
-docs/source
+# custom
+.DS_Store
+.editorconfig
 
 # From https://raw.githubusercontent.com/github/gitignore/main/Python.gitignore
 
