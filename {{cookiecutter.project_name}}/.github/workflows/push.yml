@@ -77,22 +77,22 @@ jobs:
         if: {% raw %}${{ matrix.python-version == {% endraw %}'{{cookiecutter.target_python_version}}' {% raw %}}}{% endraw %}
 {%- endif %}
 {% else %}
-tests:
-  runs-on: ubuntu-latest
-  steps:
-    - name: Check out
-      uses: actions/checkout@v4
-
-    - uses: actions/cache@v4
-      with:
-        path: ~/.cache/pre-commit
-        key: {% raw %}pre-commit-${{ runner.os }}-${{ hashFiles('.pre-commit-config.yaml') }}{% endraw %}
-
-    - name: Set up the environment
-      uses: ./.github/actions/setup-poetry-env
-
-    - name: Run tests
-      run: make test
+  tests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out
+        uses: actions/checkout@v4
+  
+      - uses: actions/cache@v4
+        with:
+          path: ~/.cache/pre-commit
+          key: {% raw %}pre-commit-${{ runner.os }}-${{ hashFiles('.pre-commit-config.yaml') }}{% endraw %}
+  
+      - name: Set up the environment
+        uses: ./.github/actions/setup-poetry-env
+  
+      - name: Run tests
+        run: make test
 {%- endif %}
 
 {%- if cookiecutter.mkdocs == "y" %}
