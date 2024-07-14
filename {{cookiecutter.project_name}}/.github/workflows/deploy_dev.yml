@@ -14,7 +14,7 @@ on:
         options:
         - linux/amd64
         - linux/arm64
-        {% raw %}${{ github.ref_name }} - ${{ github.event.head_commit.message }}{% endraw %}
+
 env:
   AWS_REGION : {% raw %}${{ vars.AWS_REGION }}{% endraw %}
   AWS_DEPLOY_ROLE_ARN_DEV : {% raw %}${{ vars.AWS_DEPLOY_ROLE_ARN_DEV }}{% endraw %}
