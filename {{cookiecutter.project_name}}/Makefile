@@ -35,7 +35,7 @@ poetry-lock: ## Generate new poetry.lock file
 .PHONY: test
 test: ## Test the code with pytest
 	@echo "🚀 Testing code: Running pytest"
-	@poetry run pytest --doctest-modules tests --cov --cov-config=pyproject.toml --cov-report=xml -vv
+	@poetry run pytest tests -vv {%- if cookiecutter.codecov == 'y' %} --cov --cov-config=pyproject.toml --cov-report=xml -vv{%- endif -%} 
 
 .PHONY: build
 build: clean-build ## Build wheel file using poetry
