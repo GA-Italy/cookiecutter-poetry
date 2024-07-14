@@ -61,7 +61,7 @@ jobs:
       aws-region: {% raw %}${{ vars.AWS_REGION }}{% endraw %}
       aws-deploy-role-arn: {% raw %}${{ vars.AWS_DEPLOY_ROLE_ARN_DEV }}{% endraw %}
       ecr-repository-name: {% raw %}${{ vars.ECR_REPOSITORY_NAME }}{% endraw %}
-  
+
   deploy_completed_dev:
     runs-on: ubuntu-latest
     needs: deploy_docker_dev
