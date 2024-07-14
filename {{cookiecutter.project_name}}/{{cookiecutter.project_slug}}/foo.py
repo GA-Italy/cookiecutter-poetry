@@ -1,5 +1,6 @@
 def foo(bar: str) -> str:
-    """Summary line.
+    """
+    Summary line.
 
     Extended description of function.
 
