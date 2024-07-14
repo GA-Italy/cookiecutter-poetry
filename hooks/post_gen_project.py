@@ -26,7 +26,8 @@ if __name__ == "__main__":
         remove_file("Dockerfile")
         if "{{cookiecutter.include_github_actions}}" == "y":
             remove_file(".github/workflows/deploy_dev.yml")
-            remove_file("scripts/versioning_script.sh")
+            remove_file(".github/workflows/deploy_prod.yml")
+            remove_file(".github/scripts/versioning_script.sh")
      
     if "{{cookiecutter.codecov}}" != "y":
         remove_file("codecov.yaml")

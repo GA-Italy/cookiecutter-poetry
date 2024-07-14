@@ -1,0 +1,87 @@
+name: Deploy prod - Workflow
+run-name: Deploy prod - docker image ${{ vars.ECR_REPOSITORY_NAME }}
+
+on:
+  workflow_dispatch:
+    inputs:
+      platforms:
+        type: choice
+        required: true
+        description: Build plaform
+        default: '["linux/amd64", "linux/arm64"]'
+        options:
+        - '["linux/amd64"]'
+        - '["linux/arm64"]'
+        - '["linux/amd64", "linux/arm64"]'
+
+      image_tag:
+        required: false
+        description: Tag name for the docker image
+
+env:
+  PYTHON_VERSION: "{{cookiecutter.target_python_version}}"
+  POETRY_VERSION: "{{cookiecutter.poetry_version}}"
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  validate_branch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check if current branch is a release branch
+        id: check_branch
+        run: |
+          if [[ "{% raw %}${{ github.ref_name }}{% endraw %}" == release/* ]]; then
+            echo "The current branch is a release branch."
+          else
+            echo "The current branch is not a release branch."
+            exit 1
+          fi
+        shell: bash
+
+  get_target_version:
+    runs-on: ubuntu-latest
+    needs: validate_branch
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Set up python & install poetry
+      id: setup-python-poetry
+      uses: ga-data-strategy-analytics/ga-github-workflows/.github/actions/install-poetry@main
+      with:
+        python-version: {% raw %}${{ env.PYTHON_VERSION }}{% endraw %}
+        poetry-version: {% raw %}${{ env.POETRY_VERSION  }}{% endraw %}
+
+    - name: Get target version
+      id: get-target-version
+      run: |
+        target_version=$(poetry version -s)
+        echo "target_version=$target_version"
+        echo "target_version=$target_version" >> "$GITHUB_OUTPUT"
+    outputs:
+      target_version: {% raw %}${{ steps.get-target-version.outputs.target_version }}{% endraw %}
+
+  deploy_docker_prod:
+    needs: get_target_version
+    uses: ga-data-strategy-analytics/ga-github-workflows/.github/workflows/deploy_docker.yml@main
+    with:
+      branch: {% raw %}${{ github.ref_name }}{% endraw %}
+      platforms: {% raw %}${{ github.event.inputs.platforms }}{% endraw %}
+      image-tag: {% raw %}${{ needs.evaluate_image_tag.outputs.image_tag }}{% endraw %}
+      context: "."
+      dockerfile: "./Dockerfile"
+      aws-env: prod
+      aws-region: {% raw %}${{ vars.AWS_REGION }}{% endraw %}
+      aws-deploy-role-arn: {% raw %}${{ vars.AWS_DEPLOY_ROLE_ARN_DEV }}{% endraw %}
+      ecr-repository-name: {% raw %}${{ vars.ECR_REPOSITORY_NAME }}{% endraw %}
+  
+  deploy_completed_prod:
+    runs-on: ubuntu-latest
+    needs: deploy_docker_prod
+    environment: prod
+    steps:
+    - name: Deploy completed
+      run: echo "Deploy prod completed!"

@@ -63,6 +63,16 @@ Now, you are prepared to embark on the development of new features for the proje
 
 Once these steps are completed successfully, proceed to commit and push your changes. The CI/CD pipeline will automatically trigger upon the creation of a pull request, merging to the main branch, or the creation of a new release.
 
+{% if cookiecutter.dockerfile == "y" -%}
+## 3. CI/CD
+
+In this project, Docker is employed to containerize the application and enhance deployment efficiency.
+The CI/CD pipeline is responsible for automatically building the Docker image and pushing it to the Amazon Elastic Container Registry (ECR) with a given tag, based of the [development cycle](https://giorgioarmani.atlassian.net/wiki/spaces/DP/pages/2083717150/Development+Process#Development-cycle) described on Confluence.
+
+For testing purposes, a docker image can be builted from any branch with a custom tag triggering the workflow declared by [Deploy dev - Workflow](https://github.com/ga-data-strategy-analytics/datalake-dbt/actions/workflows/deploy_dev.yml).
+
+There is also a possibility to build a docker image in prod enviroment (only starting form a release branch) using the workflow declared by [Deploy prod - Workflow](https://github.com/ga-data-strategy-analytics/datalake-dbt/actions/workflows/deploy_prod.yml).
+{%- endif %}
 
 
 ---

@@ -1,10 +1,12 @@
-name: validate-codecov-config
+name: Validate codecov config - Workflow
+run-name: {% raw %}${{ github.event_name == 'pull_request' && format('Validate codecov config from {0}', github.event.pull_request.head.ref) || format('Validate codecov config in {0} - {1}', github.ref_name, github.event.head_commit.message) }}{% endraw %}
 
 on:
   pull_request:
     paths: [codecov.yaml]
   push:
     branches: [main]
+    paths: [codecov.yaml]
 
 jobs:
   validate-codecov-config:

@@ -1,0 +1,20 @@
+name: Cleanup caches in closed PR - Workflow
+run-name: Cleanup caches after closing PR {% raw %}${{ github.event.pull_request.head.ref }}{% endraw %}
+
+on:
+  pull_request:
+    types:
+      - closed
+
+permissions:
+  actions: write
+
+jobs:
+  cleanup:
+    uses: ga-data-strategy-analytics/ga-github-workflows/.github/workflows/cleanup_cache.yml@main
+    with:
+      repository: {% raw %}${{ github.repository }}}{% endraw %}
+      branch: {% raw %}refs/pull/${{ github.event.pull_request.number }}/merge}{% endraw %}
+
+    secrets:
+      GH_TOKEN: {% raw %}${{ secrets.GITHUB_TOKEN }}}{% endraw %}

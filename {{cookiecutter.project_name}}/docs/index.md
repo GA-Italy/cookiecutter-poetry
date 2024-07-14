@@ -32,6 +32,5 @@ your use case by looking at the different pages.
     ├── poetry.toml
     ├── pyproject.toml
     ├── scripts
-    │   ├── gen_ref_pages.py
-    │   └── versioning_script.sh
+    │   └── gen_ref_pages.py
     └── tests
