@@ -77,4 +77,4 @@ There is also a possibility to build a docker image in prod enviroment (only sta
 
 ---
 ### Credits
-Repository initiated with [ga-data-strategy-analytics/cookiecutter-python-template](https://github.com/ga-data-strategy-analytics/cookiecutter-python-template).
+Repository initiated with [ga-data-strategy-analytics/cookiecutter-python-poetry-template](https://github.com/ga-data-strategy-analytics/cookiecutter-python-poetry-template).
