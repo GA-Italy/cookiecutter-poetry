@@ -20,7 +20,7 @@ In order to keep the project aligned with possible updates on the template, it i
 1. Install cruft:
     `pip install cruft`
 
-2. Create a repository from template: `cruft create https://github.com/ga-data-strategy-analytics/cookiecutter-python-template.git` and configure the project
+2. Create a repository from template: `cruft create https://github.com/ga-data-strategy-analytics/cookiecutter-python-poetry-template.git` and configure the project
 
 3. Configure git and create a branch to push on the related data collection repository:
     ```bash
